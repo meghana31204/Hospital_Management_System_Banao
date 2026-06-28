@@ -1,0 +1,20 @@
+service: email-service
+
+frameworkVersion: "4"
+
+provider:
+  name: aws
+  runtime: python3.10
+  timeout: 30
+
+plugins:
+  - serverless-offline
+
+functions:
+  sendEmail:
+    handler: handler.send_email
+    timeout: 30
+    events:
+      - httpApi:
+          path: /email
+          method: post

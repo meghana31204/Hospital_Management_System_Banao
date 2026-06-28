@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+</head>
+<body>
+   {% if messages %}
+    {% for message in messages %}
+        <div style="padding:10px; margin:10px 0; border:1px solid #ccc; background:#f8f8f8;">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+    <h2>Create Availability Slot</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            Start Time:
+            <input type="datetime-local" name="start_time">
+            <br><br>
+
+            End Time:
+            <input type="datetime-local" name="end_time">
+            <br><br>
+
+            <button type="submit">
+                Create Slot
+            </button>
+        </form>
+        <h2>My Slots</h2>
+
+{% for slot in slots %}
+    <p>
+        {{ slot.start_time }}
+        -
+        {{ slot.end_time }}
+
+        {% if slot.is_booked %}
+            (Booked)
+        {% else %}
+            (Available)
+
+            <form action="{% url 'delete_slot' slot.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">
+                    Delete
+                </button>
+            </form>
+        {% endif %}
+    </p>
+{% endfor %}
+    <a href="{% url 'logout' %}">Logout</a>
+</body>
+</html>

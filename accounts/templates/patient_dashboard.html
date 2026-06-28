@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+</head>
+<body>
+    {% if messages %}
+    {% for message in messages %}
+        <div style="padding:10px; margin:10px 0; border:1px solid #ccc; background:#f8f8f8;">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+    <h1>Patient Dashboard</h1>
+
+    <h2>Available Slots</h2>
+
+    {% for slot in slots %}
+
+    <p>
+        Doctor : {{slot.doctor.username}}
+        <br>
+        Start : {{slot.start_time}}
+        <br>
+        End : {{slot.end_time}}
+    </p>
+        <form action="{% url 'book_slot' slot.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">
+                Book
+            </button>
+        </form>
+    <hr>
+
+    {% empty %}
+
+    <h3>No Slots Available</h3>
+
+    {% endfor %}
+    <a href="{% url 'logout' %}">Logout</a>
+</body>
+</html>
