@@ -3,32 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Hospital Management System - Login</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background:linear-gradient(135deg,#0d6efd,#4facfe);
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        .login-card{
+            width:420px;
+            background:white;
+            border-radius:20px;
+            padding:40px;
+            box-shadow:0px 10px 30px rgba(0,0,0,.25);
+        }
+
+        .hospital-icon{
+            font-size:60px;
+        }
+
+        h2{
+            font-weight:bold;
+            color:#0d6efd;
+        }
+
+        .btn-primary{
+            border-radius:10px;
+            padding:10px;
+            font-size:18px;
+        }
+
+        .form-control{
+            border-radius:10px;
+            padding:10px;
+        }
+
+        .signup-link{
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+    </style>
+
 </head>
 <body>
-    {% if messages %}
-    {% for message in messages %}
-        <div style="padding:10px; margin:10px 0; border:1px solid #ccc; background:#f8f8f8;">
-            {{ message }}
+
+<div class="login-card">
+
+    <div class="text-center mb-4">
+
+        <div class="hospital-icon">
+            🏥
         </div>
-    {% endfor %}
-{% endif %}
-    <fieldset>
-        <legend> Login </legend>
-        <form method="POST">
-            {% csrf_token %}
 
-            Username:
-            <input type="text" name="username">
-            <br><br>
+        <h2>Hospital Management System</h2>
 
-            Password:
-            <input type="password" name="password">
-            <br><br>
+        <p class="text-muted">
+            Login to continue
+        </p>
 
-            <button type="submit">Login</button>
+    </div>
 
-        </form>
-    </fieldset>
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="alert alert-warning">
+
+                {{ message }}
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="mb-3">
+
+            <label class="form-label">
+
+                Username
+
+            </label>
+
+            <input
+                type="text"
+                name="username"
+                class="form-control"
+                placeholder="Enter Username"
+                required
+            >
+
+        </div>
+
+        <div class="mb-4">
+
+            <label class="form-label">
+
+                Password
+
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                class="form-control"
+                placeholder="Enter Password"
+                required
+            >
+
+        </div>
+
+        <button class="btn btn-primary w-100">
+
+            Login
+
+        </button>
+
+    </form>
+
+    <hr>
+
+    <div class="text-center">
+
+        Don't have an account?
+
+        <a href="{% url 'signup' %}" class="signup-link">
+
+            Sign Up
+
+        </a>
+
+    </div>
+
+</div>
+
 </body>
 </html>

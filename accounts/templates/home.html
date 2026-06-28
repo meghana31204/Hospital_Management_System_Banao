@@ -1,0 +1,364 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>MediCare+ Hospital</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+/* Navbar */
+
+.navbar{
+    background:white;
+    box-shadow:0 2px 15px rgba(0,0,0,.1);
+}
+
+.navbar-brand{
+    font-size:28px;
+    font-weight:bold;
+    color:#0d6efd;
+}
+
+.nav-link{
+    font-weight:600;
+    color:#333;
+}
+
+.nav-link:hover{
+    color:#0d6efd;
+}
+
+/* Hero */
+
+.hero{
+
+    min-height:90vh;
+    display:flex;
+    align-items:center;
+
+    background:linear-gradient(to right,#edf5ff,#ffffff);
+
+}
+
+.hero h1{
+
+    font-size:58px;
+    font-weight:bold;
+    color:#0d6efd;
+
+}
+
+.hero p{
+
+    font-size:20px;
+    margin-top:20px;
+    color:#555;
+
+}
+
+.hero img{
+
+    width:100%;
+    max-width:500px;
+
+}
+
+/* About */
+
+.about{
+
+    padding:80px 0;
+
+}
+
+.about h2{
+
+    color:#0d6efd;
+    margin-bottom:20px;
+
+}
+
+/* Gallery */
+
+.gallery{
+
+    background:#f8f9fa;
+    padding:80px 0;
+
+}
+
+.gallery img{
+
+    width:100%;
+    height:230px;
+    object-fit:cover;
+    border-radius:12px;
+    transition:.3s;
+
+}
+
+.gallery img:hover{
+
+    transform:scale(1.05);
+
+}
+
+footer{
+
+    background:#0d6efd;
+    color:white;
+    text-align:center;
+    padding:20px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<nav class="navbar navbar-expand-lg">
+
+<div class="container">
+
+<a class="navbar-brand" href="#">
+🏥 MediCare+
+</a>
+
+<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+
+<span class="navbar-toggler-icon"></span>
+
+</button>
+
+<div class="collapse navbar-collapse" id="menu">
+
+<ul class="navbar-nav ms-auto">
+
+<li class="nav-item">
+
+<a href="#" class="nav-link">
+Home
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a href="#about" class="nav-link">
+About Us
+</a>
+
+</li>
+
+<li class="nav-item">
+
+<a href="#gallery" class="nav-link">
+Gallery
+</a>
+
+</li>
+
+<li class="nav-item ms-3">
+
+<a href="{% url 'login' %}" class="btn btn-outline-primary">
+Login
+</a>
+
+</li>
+
+<li class="nav-item ms-2">
+
+<a href="{% url 'signup' %}" class="btn btn-primary">
+Sign Up
+</a>
+
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</nav>
+
+<!-- Hero -->
+
+<section class="hero">
+
+<div class="container">
+
+<div class="row align-items-center">
+
+<div class="col-lg-6">
+
+<h1>
+
+Your Health <br>
+Our Priority
+
+</h1>
+
+<p>
+
+Book appointments online, connect with experienced doctors,
+manage schedules effortlessly, and receive instant email
+notifications with Google Calendar integration.
+
+</p>
+
+<br>
+
+<a href="{% url 'signup' %}" class="btn btn-primary btn-lg">
+
+Book Appointment
+
+</a>
+
+</div>
+
+<div class="col-lg-6 text-center">
+
+<img src="{% static 'images/doctor.jpg' %}" alt="Doctor">
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- About -->
+
+<section id="about" class="about">
+
+<div class="container">
+
+<div class="row">
+
+<div class="col-lg-6">
+
+<h2>
+
+About MediCare+
+
+</h2>
+
+<p>
+
+MediCare+ Hospital Management System is a modern healthcare
+platform that simplifies doctor availability management,
+patient appointment booking, Google Calendar integration,
+and automated email notifications.
+
+Our mission is to provide secure, reliable, and convenient
+healthcare appointment management for both doctors and patients.
+
+</p>
+
+</div>
+
+<div class="col-lg-6">
+
+<img src="{% static 'images/gallery1.jpg' %}" class="img-fluid rounded">
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- Gallery -->
+
+<section id="gallery" class="gallery">
+
+<div class="container">
+
+<h2 class="text-center text-primary mb-5">
+
+Hospital Gallery
+
+</h2>
+
+<div class="row g-4">
+
+<div class="col-md-4">
+<img src="{% static 'images/gallery1.jpg' %}">
+</div>
+
+<div class="col-md-4">
+<img src="{% static 'images/gallery2.jpg' %}">
+</div>
+
+<div class="col-md-4">
+<img src="{% static 'images/gallery3.png' %}">
+</div>
+
+<div class="col-md-4">
+<img src="{% static 'images/gallery4.jpg' %}">
+</div>
+
+<div class="col-md-4">
+<img src="{% static 'images/gallery5.jpg' %}">
+</div>
+
+<div class="col-md-4">
+<img src="{% static 'images/gallery6.jpg' %}">
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+<h4>
+
+🏥 MediCare+
+
+</h4>
+
+<p>
+
+Advanced Hospital Management System
+
+</p>
+
+<p>
+
+Developed by Meghana Pavuluri
+
+</p>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

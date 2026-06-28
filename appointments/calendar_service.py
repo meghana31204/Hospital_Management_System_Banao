@@ -1,16 +1,52 @@
-import os
-from google_auth_oauthlib.flow import Flow
+import json
 
-SCOPES = ["https://www.googleapis.com/auth/calendar"]
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CLIENT_SECRET_FILE = os.path.join(BASE_DIR, "credentials.json")
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 
-def get_google_flow():
-    flow = Flow.from_client_secrets_file(
-        CLIENT_SECRET_FILE,
-        scopes=SCOPES,
-        redirect_uri="http://127.0.0.1:8000/google/callback/"
+SCOPES = [
+    "https://www.googleapis.com/auth/calendar"
+]
+
+
+def get_calendar_service(user):
+
+    if not user.google_credentials:
+        return None
+
+    credentials = Credentials.from_authorized_user_info(
+        json.loads(user.google_credentials),
+        SCOPES
     )
-    return flow
+
+    service = build(
+        "calendar",
+        "v3",
+        credentials=credentials
+    )
+
+    return service
+def create_calendar_event(user, title, start_time, end_time, description=""):
+
+    service = get_calendar_service(user)
+
+    if service is None:
+        return
+
+    event = {
+        "summary": title,
+        "description": description,
+        "start": {
+            "dateTime": start_time.isoformat(),
+            "timeZone": "UTC",
+        },
+        "end": {
+            "dateTime": end_time.isoformat(),
+            "timeZone": "UTC",
+        },
+    }
+
+    service.events().insert(
+        calendarId="primary",
+        body=event
+    ).execute()

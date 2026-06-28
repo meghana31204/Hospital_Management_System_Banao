@@ -1,3 +1,6 @@
+import os
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+from google_auth_oauthlib.flow import Flow
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import User
 from django.contrib.auth import authenticate, login, logout
@@ -7,14 +10,13 @@ from django.utils import timezone
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from datetime import datetime
-import json
-from django.conf import settings
-from google_auth_oauthlib.flow import Flow
-
+from appointments.calendar_service import create_calendar_event
 import requests
 # ----------------------------
 # Signup
 # ----------------------------
+def home(request):
+    return render(request, "home.html")
 def signup(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -233,6 +235,29 @@ def book_slot(request, slot_id):
 
         slot.is_booked = True
         slot.save()
+
+        try:
+    # Create event in doctor's calendar
+            create_calendar_event(
+                slot.doctor,
+                f"Appointment with {request.user.first_name} {request.user.last_name}",
+                slot.start_time,
+                slot.end_time,
+                f"Patient: {request.user.first_name} {request.user.last_name}"
+            )
+
+            # Create event in patient's calendar
+            create_calendar_event(
+                request.user,
+                f"Appointment with Dr. {slot.doctor.first_name} {slot.doctor.last_name}",
+                slot.start_time,
+                slot.end_time,
+                f"Doctor: Dr. {slot.doctor.first_name} {slot.doctor.last_name}"
+            )
+
+        except Exception as e:
+            print("Google Calendar Error:", e)
+
         try:
             requests.post(
                 "http://localhost:3000/email",
@@ -245,13 +270,13 @@ def book_slot(request, slot_id):
             )
         except requests.RequestException:
             pass
+
         messages.success(
             request,
             "Appointment booked successfully."
         )
 
     return redirect("patient_dashboard")
-
 
 # ----------------------------
 # Delete Slot
@@ -286,30 +311,39 @@ def delete_slot(request, slot_id):
 def google_login(request):
     flow = Flow.from_client_secrets_file(
         "credentials.json",
-        scopes=["https://www.googleapis.com/auth/calendar"],
-        redirect_uri="http://127.0.0.1:8000/google/callback/"
+        scopes=[
+            "https://www.googleapis.com/auth/calendar"
+        ]
     )
 
+    flow.redirect_uri = "http://127.0.0.1:8000/google/callback/"
     authorization_url, state = flow.authorization_url(
         access_type="offline",
-        include_granted_scopes="true",
-        prompt="consent"
+        prompt="consent",
+        include_granted_scopes="true"
     )
 
     request.session["state"] = state
+    request.session["code_verifier"] = flow.code_verifier
 
     return redirect(authorization_url)
 
 
 def google_callback(request):
+
     state = request.session.get("state")
 
     flow = Flow.from_client_secrets_file(
         "credentials.json",
-        scopes=["https://www.googleapis.com/auth/calendar"],
-        state=state,
-        redirect_uri="http://127.0.0.1:8000/google/callback/"
+        scopes=[
+            "https://www.googleapis.com/auth/calendar"
+        ],
+        state=state
     )
+
+    flow.redirect_uri = "http://127.0.0.1:8000/google/callback/"
+
+    flow.code_verifier = request.session.get("code_verifier")
 
     flow.fetch_token(
         authorization_response=request.build_absolute_uri()
@@ -317,20 +351,16 @@ def google_callback(request):
 
     credentials = flow.credentials
 
-    user = request.user
+    request.user.google_credentials = credentials.to_json()
 
-    user.google_token = credentials.token
-    user.google_refresh_token = credentials.refresh_token
-    user.google_token_uri = credentials.token_uri
-
-    user.save()
+    request.user.save()
 
     messages.success(
         request,
-        "Google Calendar connected successfully."
+        "Google Calendar connected successfully!"
     )
 
-    if user.role == "doctor":
+    if request.user.role == "doctor":
         return redirect("doctor_dashboard")
 
     return redirect("patient_dashboard")

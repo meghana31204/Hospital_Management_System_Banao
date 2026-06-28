@@ -4,54 +4,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body{
+            background:#f4f7fc;
+        }
+
+        .navbar{
+            background:#0d6efd;
+        }
+
+        .navbar-brand{
+            color:white;
+            font-weight:bold;
+        }
+
+        .navbar a{
+            color:white;
+            text-decoration:none;
+        }
+
+        .card{
+            border:none;
+            border-radius:15px;
+            box-shadow:0 8px 20px rgba(0,0,0,.08);
+        }
+
+        .btn-primary{
+            border-radius:10px;
+        }
+
+        .btn-success{
+            border-radius:10px;
+        }
+
+        .slot-booked{
+            color:red;
+            font-weight:bold;
+        }
+
+        .slot-available{
+            color:green;
+            font-weight:bold;
+        }
+
+        .page-title{
+            font-weight:bold;
+            color:#0d6efd;
+        }
+    </style>
+
 </head>
 <body>
-   {% if messages %}
-    {% for message in messages %}
-        <div style="padding:10px; margin:10px 0; border:1px solid #ccc; background:#f8f8f8;">
-            {{ message }}
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+
+        <a class="navbar-brand" href="#">
+            🏥 Hospital Management System
+        </a>
+
+        <div>
+
+            <a href="{% url 'google_login' %}" class="btn btn-light me-2">
+                📅 Connect Google Calendar
+            </a>
+
+            <a href="{% url 'logout' %}" class="btn btn-danger">
+                Logout
+            </a>
+
         </div>
-    {% endfor %}
-{% endif %}
-    <h2>Create Availability Slot</h2>
 
-        <form method="POST">
-            {% csrf_token %}
+    </div>
+</nav>
 
-            Start Time:
-            <input type="datetime-local" name="start_time">
-            <br><br>
+<div class="container mt-5">
 
-            End Time:
-            <input type="datetime-local" name="end_time">
-            <br><br>
+    {% if messages %}
 
-            <button type="submit">
-                Create Slot
-            </button>
-        </form>
-        <h2>My Slots</h2>
+        {% for message in messages %}
 
-{% for slot in slots %}
-    <p>
-        {{ slot.start_time }}
-        -
-        {{ slot.end_time }}
+            <div class="alert alert-info">
 
-        {% if slot.is_booked %}
-            (Booked)
-        {% else %}
-            (Available)
+                {{ message }}
 
-            <form action="{% url 'delete_slot' slot.id %}" method="POST">
-                {% csrf_token %}
-                <button type="submit">
-                    Delete
-                </button>
-            </form>
-        {% endif %}
-    </p>
-{% endfor %}
-    <a href="{% url 'logout' %}">Logout</a>
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+    <h2 class="page-title mb-4">
+        👨‍⚕️ Welcome Dr. {{request.user.first_name}}
+    </h2>
+
+    <div class="row">
+
+        <div class="col-lg-5">
+
+            <div class="card p-4">
+
+                <h4>Create Availability Slot</h4>
+
+                <form method="POST">
+
+                    {% csrf_token %}
+
+                    <label class="form-label mt-3">
+                        Start Time
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        name="start_time"
+                        class="form-control"
+                        required
+                    >
+
+                    <label class="form-label mt-3">
+                        End Time
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        name="end_time"
+                        class="form-control"
+                        required
+                    >
+
+                    <button
+                        class="btn btn-primary mt-4 w-100"
+                    >
+                        Create Slot
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-7">
+
+            <div class="card p-4">
+
+                <h4>My Availability</h4>
+
+                <table class="table table-hover mt-3">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Start</th>
+
+                            <th>End</th>
+
+                            <th>Status</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for slot in slots %}
+
+                    <tr>
+
+                        <td>{{slot.start_time}}</td>
+
+                        <td>{{slot.end_time}}</td>
+
+                        <td>
+
+                            {% if slot.is_booked %}
+
+                            <span class="slot-booked">
+                                Booked
+                            </span>
+
+                            {% else %}
+
+                            <span class="slot-available">
+                                Available
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if not slot.is_booked %}
+
+                            <form action="{% url 'delete_slot' slot.id %}" method="POST">
+
+                                {% csrf_token %}
+
+                                <button class="btn btn-sm btn-danger">
+
+                                    Delete
+
+                                </button>
+
+                            </form>
+
+                            {% else %}
+
+                            -
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="4" class="text-center">
+
+                            No slots available
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>
