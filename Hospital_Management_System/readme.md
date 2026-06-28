@@ -1,7 +1,9 @@
 # Hospital Management System
 
 A Django-based Hospital Management System that allows doctors to manage their availability and enables patients to book appointments. The system includes role-based authentication, appointment booking with race condition handling, Google Calendar integration for both doctors and patients, and a separate Serverless email service for sending welcome and booking confirmation emails. The entire application is designed to run locally.
+
 ---
+
 ## Setup and Run
 
 ### Prerequisites
@@ -45,7 +47,9 @@ credentials.json
 
 ### Run the Django Application
 
----> python manage.py runserver
+```bash
+python manage.py runserver
+```
 
 The application will be available at:
 
@@ -57,11 +61,17 @@ http://127.0.0.1:8000/
 
 Open another terminal.
 
-Navigate to the email-service folder. ----> cd email-service
+Navigate to the email-service folder.
+
+```bash
+cd email-service
+```
 
 Run:
-serverless.cmd offline
 
+```bash
+serverless.cmd offline
+```
 
 The email service will be available at:
 
@@ -70,7 +80,8 @@ http://localhost:3000/
 ```
 
 After both services are running, the application is ready for use.
---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---
 
 ## System Architecture
 
@@ -171,6 +182,7 @@ This approach locks the selected availability slot while the booking transaction
 I selected this approach because it provides reliable protection against race conditions while maintaining data consistency. Although it introduces slightly more complexity, it guarantees that each appointment slot can only be booked once, which is essential for a hospital appointment system.
 
 ---
+
 ## Limitations
 
 This project is intended for local demonstration and evaluation.
