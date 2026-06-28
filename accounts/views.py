@@ -259,7 +259,7 @@ def book_slot(request, slot_id):
             print("Google Calendar Error:", e)
 
         try:
-            requests.post(
+            response = requests.post(
                 "http://localhost:3000/email",
                 json={
                     "trigger": "BOOKING_CONFIRMATION",
@@ -268,8 +268,12 @@ def book_slot(request, slot_id):
                 },
                 timeout=10
             )
-        except requests.RequestException:
-            pass
+
+            print("Status Code:", response.status_code)
+            print("Response:", response.text)
+
+        except Exception as e:
+            print("Django Email Error:", e)
 
         messages.success(
             request,

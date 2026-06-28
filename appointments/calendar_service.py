@@ -38,11 +38,11 @@ def create_calendar_event(user, title, start_time, end_time, description=""):
         "description": description,
         "start": {
             "dateTime": start_time.isoformat(),
-            "timeZone": "UTC",
+            "timeZone": "Asia/Kolkata",
         },
         "end": {
             "dateTime": end_time.isoformat(),
-            "timeZone": "UTC",
+            "timeZone": "Asia/Kolkata",
         },
     }
 
